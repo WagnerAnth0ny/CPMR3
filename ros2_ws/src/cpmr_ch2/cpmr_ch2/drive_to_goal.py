@@ -37,14 +37,13 @@ class MoveToGoal(Node):
         super().__init__('move_robot_to_goal')
         self.get_logger().info(f'{self.get_name()} created')
 
-        self.add_on_set_parameters_callback(self.parameter_callback)
-        self.declare_parameter('goal_x', Parameter.Type.DOUBLE)
-        self._goal_x = self.get_parameter('goal_x').get_parameter_value().double_value
-        self.declare_parameter('goal_y', Parameter.Type.DOUBLE)
-        self._goal_y = self.get_parameter('goal_y').get_parameter_value().double_value
-        self.declare_parameter('goal_t', Parameter.Type.DOUBLE)
-        self._goal_t = self.get_parameter('goal_t').get_parameter_value().double_value
-        self.get_logger().info(f"initial goal {self._goal_x} {self._goal_y} {self._goal_t}")
+        self.declare_parameter('_goal_t', 0.0)
+        self.declare_parameter('_goal_x', 0.0)
+        self.declare_parameter('_goal_y', 0.0)
+
+        self._goal_t = self.get_parameter('_goal_t').value
+        self._goal_x = self.get_parameter('_goal_x').value
+        self._goal_y = self.get_parameter('_goal_y').value
 
         self._subscriber = self.create_subscription(Odometry, "/odom", self._listener_callback, 1)
         self._publisher = self.create_publisher(Twist, "/cmd_vel", 1)
@@ -69,25 +68,7 @@ class MoveToGoal(Node):
             y = max(min(y_diff * vel_gain, max_vel), -max_vel)
             twist.linear.x = x * math.cos(cur_t) + y * math.sin(cur_t)
             twist.linear.y = -x * math.sin(cur_t) + y * math.cos(cur_t)
-            self.get_logger().info(f"at ({cur_x},{cur_y},{cur_t}) goal ({self._goal_x},{self._goal_y},{self._goal_t})")
         self._publisher.publish(twist)
-
-    def parameter_callback(self, params):
-        self.get_logger().info(f'move_robot_to_goal parameter callback {params}')
-        for param in params:
-            self.get_logger().info(f'move_robot_to_goal processing {param.name}')
-            if param.name == 'goal_x' and param.type_ == Parameter.Type.DOUBLE:
-                self._goal_x = param.value
-            elif param.name == 'goal_y' and param.type_ == Parameter.Type.DOUBLE:
-                self._goal_y = param.value
-            elif param.name == 'goal_t' and param.type_ == Parameter.Type.DOUBLE:
-                self._goal_t = param.value
-            else:
-                self.get_logger().warn(f'{self.get_name()} Invalid parameter {param.name}')
-                return SetParametersResult(successful=False)
-            self.get_logger().warn(f"Changing goal {self._goal_x} {self._goal_y} {self._goal_t}")
-        return SetParametersResult(successful=True)
-
 
 
 def main(args=None):
