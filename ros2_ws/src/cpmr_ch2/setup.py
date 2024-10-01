@@ -27,6 +27,8 @@ setup(
             'add_obstacle = cpmr_ch2.add_obstacle:main',
             'build_map = cpmr_ch2.build_map:main',
             'destroy_map = cpmr_ch2.destroy_map:main',
+            'bug_two = cpmr_ch2.bug_two:main',
+            'move_in_circles = cpmr_ch2.move_in_circles:main'
         ],
     },
 )
