@@ -1,6 +1,12 @@
 # Intruçôes sobre como rodar o projeto
 
-Primeiramente é preciso buildar o projeto usando:
+Primeiramente precisamos rodar o script para fazer a source do ROS2
+
+```
+source /opt/ros/humble/setup.bash
+```
+
+Também é preciso buildar o projeto usando:
 
 ```
 colcon build
