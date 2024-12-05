@@ -37,13 +37,18 @@ class MoveToGoal(Node):
         super().__init__('move_robot_to_goal')
         self.get_logger().info(f'{self.get_name()} created')
 
-        self.declare_parameter('_goal_t', 0.0)
-        self.declare_parameter('_goal_x', 0.0)
+        self.declare_parameter('_goal_t', 3.0)
+        self.declare_parameter('_goal_x', 3.0)
         self.declare_parameter('_goal_y', 0.0)
 
         self._goal_t = self.get_parameter('_goal_t').value
+        self.get_logger().info(f'{self.get_name()} goal_t parameter set to {self._goal_t}')
+
         self._goal_x = self.get_parameter('_goal_x').value
+        self.get_logger().info(f'{self.get_name()} goal_x parameter set to {self._goal_x}')
+
         self._goal_y = self.get_parameter('_goal_y').value
+        self.get_logger().info(f'{self.get_name()} goal_y parameter set to {self._goal_y}')
 
         self._subscriber = self.create_subscription(Odometry, "/odom", self._listener_callback, 1)
         self._publisher = self.create_publisher(Twist, "/cmd_vel", 1)
